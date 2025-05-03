@@ -14,7 +14,8 @@ from reCBZ.profiles import ProfileDict
 
 def print_title() -> None:
     align = int(config.term_width() / 2) - 11
-    if align > 21: align = 21
+    if align > 21: 
+        align = 21
     if align + 22 > config.term_width() or align < 0:
         align = 0
     align = align * ' '
@@ -360,7 +361,8 @@ def main():
 
     # everything passed. do stuff
     exit_code = 0
-    if reCBZ.SHOWTITLE and config.loglevel >= 0: print_title()
+    if reCBZ.SHOWTITLE and config.loglevel >= 0:
+        print_title()
     try:
         if args.mode == 'join':
             wrappers.join_archives(paths[0], paths[1:])

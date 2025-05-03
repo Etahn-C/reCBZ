@@ -41,10 +41,12 @@ def mylog(msg:str, progress=False) -> None:
 def human_sort(lst) -> list:
     """ Sort the given iterable in the way that humans expect."""
     # https://stackoverflow.com/a/2669120/
-    if not type(lst[0]) is str:
+    if type(lst[0]) is not str:
         lst = [str(i) for i in lst]
-    convert = lambda text: int(text) if text.isdigit() else text
-    alphanum_key = lambda key: [convert(c) for c in split('([0-9]+)', key)]
+    def convert(text):
+        return int(text) if text.isdigit() else text
+    def alphanum_key(key):
+        return [convert(c) for c in split('([0-9]+)', key)]
     return sorted(lst, key = alphanum_key)
 
 
@@ -84,7 +86,7 @@ def init_pool():
 def worker_sigint_CTRL_C(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if not 'ctrl_c_entered' in globals():
+        if 'ctrl_c_entered' not in globals():
             # init_pool hasn't been called because we're not from mp_pool_manager
             # (i.e. single threaded)
             return func(*args, **kwargs)

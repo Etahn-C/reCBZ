@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import re
 import time
 import shutil
 import tempfile
@@ -13,7 +12,7 @@ from PIL import Image, UnidentifiedImageError
 
 import reCBZ
 import reCBZ.config as config
-from reCBZ.formats import *
+from reCBZ.formats import FormatDict, Jpeg, Png, WebpLossless, WebpLossy, LossyFmt
 from reCBZ.util import mylog, map_workers, worker_sigint_CTRL_C, human_sort
 
 # TODO:
@@ -69,7 +68,8 @@ def write_mobi(savepath, chapters):
 
 
 def get_format_class(name):
-    if name in (None, ''): return None
+    if name in (None, ''):
+        return None
     else:
         try:
             return FormatDict[name]
@@ -179,7 +179,7 @@ class Page():
         else:
             PIL_fmt = self.img.format
             if PIL_fmt is None:
-                raise KeyError(f"Image.format returned None")
+                raise KeyError("Image.format returned None")
             elif PIL_fmt == "PNG":
                 return Png
             elif PIL_fmt == "JPEG":
@@ -280,7 +280,7 @@ class ComicArchive():
     def extract(self, count:int=0, raw:bool=False) -> tuple:
         try:
             source_zip = ZipFile(self.fp)
-        except BadZipFile as err:
+        except BadZipFile:
             raise ValueError(f"Fatal: '{self.fp}': not a zip file")
 
         compressed_files = source_zip.namelist()
@@ -305,8 +305,10 @@ class ComicArchive():
         sorted_pages = tuple(Page(path) for path in sorted_paths)
 
         mylog('', progress=True)
-        if raw: return sorted_paths
-        else: return sorted_pages
+        if raw: 
+            return sorted_paths
+        else: 
+            return sorted_pages
 
     def add_chapter(self, second_archive, start=None, end=None) -> tuple:
         try:
@@ -338,10 +340,14 @@ class ComicArchive():
     def convert_pages(self, fmt=None, quality=None, grayscale=None, size=None) -> tuple:
         # TODO assert values are the right type
         options = dict(self._page_opt)
-        if fmt is not None: options['format'] = get_format_class(fmt)
-        if quality is not None: options['quality'] = int(quality)
-        if grayscale is not None: options['grayscale'] = bool(grayscale)
-        if size is not None: options['size'] = size
+        if fmt is not None:
+            options['format'] = get_format_class(fmt)
+        if quality is not None:
+            options['quality'] = int(quality)
+        if grayscale is not None:
+            options['grayscale'] = bool(grayscale)
+        if size is not None: 
+            options['size'] = size
 
         worker = partial(convert_page_worker, options=options)
         results = map_workers(worker, self.fetch_pages())

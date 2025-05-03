@@ -63,7 +63,8 @@ def pprint_repack_stats(source:dict, new:dict, start_t:float) -> None:
     splitter = ''.rjust(length, '-')
     lines = line1 + line2 + '\n' + splitter
     mylog('', progress=True)
-    if config.loglevel >= 0: print(lines)
+    if config.loglevel >= 0:
+        print(lines)
 
 
 def save(book):
@@ -109,7 +110,7 @@ def compare_fmts_archive(fp:str, quiet=False) -> tuple:
     """Run a sample with each image format, return the results"""
     try:
         results = ComicArchive(fp).compute_fmt_sizes()
-    except UnidentifiedImageError as err:
+    except UnidentifiedImageError:
         print("[!] Can't calculate size: PIL.UnidentifiedImageError. Aborting")
         raise AbortedCompareError
     if not quiet:
@@ -121,7 +122,8 @@ def unpack_archive(fp:str) -> None:
     # not implemented yet
     """Unpack the archive, converting all images within
     Returns path to repacked archive"""
-    if config.loglevel >= 0: print(shorten('[i] Unpacking', fp))
+    if config.loglevel >= 0:
+        print(shorten('[i] Unpacking', fp))
     unpacked = ComicArchive(fp).extract()
     for file in unpacked:
         print(file)
@@ -131,7 +133,8 @@ def unpack_archive(fp:str) -> None:
 def repack_archive(fp:str) -> str:
     """Repack the archive, converting all images within
     Returns path to repacked archive"""
-    if config.loglevel >= 0: print(shorten('[i] Repacking', fp))
+    if config.loglevel >= 0:
+        print(shorten('[i] Repacking', fp))
     source_fp = Path(fp)
     start_t = time.perf_counter()
     book = ComicArchive(str(source_fp))
@@ -151,7 +154,8 @@ def repack_archive(fp:str) -> str:
 def join_archives(main_path:str, paths:list) -> str:
     """Concatenates the contents of paths to main_path and repacks
     Returns path to concatenated archive"""
-    if config.loglevel >= 0: print(shorten('[i] Repacking', main_path))
+    if config.loglevel >= 0:
+        print(shorten('[i] Repacking', main_path))
     source_fp = Path(main_path)
     start_t = time.perf_counter()
     main_book = ComicArchive(main_path)
@@ -201,6 +205,5 @@ def auto_repack_archive(fp:str) -> str:
     results = compare_fmts_archive(fp, quiet=True)
     selection = {"desc":results[1][1], "name":results[1][2]}
     fmt_name = selection['name']
-    fmt_desc = selection['desc']
     config.img_format = fmt_name
     return repack_archive(fp)

@@ -1,13 +1,10 @@
 import os
 from importlib import resources
 
-try:
-    import tomllib
-except ModuleNotFoundError:
-    import tomli as tomllib
+
+import tomllib
 from PIL import Image
 
-import reCBZ
 from reCBZ.formats import FormatList
 from reCBZ.profiles import ProfileDict
 
@@ -56,9 +53,12 @@ def term_width() -> int:
     try:
         TERM_COLUMNS, TERM_LINES = os.get_terminal_size()
         assert TERM_COLUMNS > 0 and TERM_LINES > 0
-        if TERM_COLUMNS > 120: max_width = 120
-        elif TERM_COLUMNS < 30: max_width = 30
-        else: max_width = TERM_COLUMNS - 2
+        if TERM_COLUMNS > 120:
+            max_width = 120
+        elif TERM_COLUMNS < 30:
+            max_width = 30
+        else:
+            max_width = TERM_COLUMNS - 2
     except (AssertionError, OSError):
         print("[!] Can't determine terminal size, defaulting to 78 cols")
         max_width = 78
