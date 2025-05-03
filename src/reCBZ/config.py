@@ -1,8 +1,7 @@
 import os
 from importlib import resources
 
-
-import tomllib
+import tomli as tomllib
 from PIL import Image
 
 from reCBZ.formats import FormatList
