@@ -172,6 +172,11 @@ def main():
         dest="img_format",
         type=str,
         help="format to convert pages to: jpeg, webp, webpll, or png")
+    images_group.add_argument( "--keepratio",
+        default=None,
+        dest="keep_ratio",
+        action="store_true",
+        help="keep aspect ratio with --size")
     images_group.add_argument( "--imgfmt", # deprecated
         default=None,
         choices=('jpeg', 'png', 'webp', 'webpll'),
