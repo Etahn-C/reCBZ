@@ -1,11 +1,7 @@
 import os
 from importlib import resources
 
-
-try:
-    import tomllib
-except ModuleNotFoundError:
-    import tomli as tomllib
+import tomli as tomllib
 from PIL import Image
 
 from reCBZ.formats import FormatList
