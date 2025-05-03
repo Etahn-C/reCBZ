@@ -71,6 +71,8 @@ def save(book):
     global actual_stem
     bad_files = book.bad_files
     if len(bad_files) > 0:
+        # Will bypass ComicInfo.xml files
+        bad_files = [f for f in bad_files if "ComicInfo.xml" not in str(f)]
         if re.compile('\\.epub$').match(book.fp.suffix):
             old_len = len(bad_files)
             bad_files = [f for f in bad_files if not reCBZ.EPUB_FILES.match(str(f))]
@@ -95,7 +97,7 @@ def save(book):
     if not config.no_write:
         if config.overwrite:
             name = str(Path.joinpath(book.fp.parents[0], actual_stem))
-            book.fp.unlink()
+            #book.fp.unlink()
         # elif savedir TODO
         else:
             name = str(Path.joinpath(Path.cwd(), f'{actual_stem}'))

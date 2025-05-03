@@ -56,7 +56,7 @@ def write_zip(savepath, chapters):
                 new_zip.write(page.fp, dest, ZIP_DEFLATED, 9)
             else:
                 new_zip.write(page.fp, dest, ZIP_STORED)
-    # Will take the ComicInfo.xml file if it was added. Must use --force.
+    # Will take the ComicInfo.xml file if it was added.
     xml_file = (str(chapters[0][0].fp)).replace(str(chapters[0][0].rel_path), "ComicInfo.xml")
     from os.path import exists
     if exists(xml_file):
@@ -437,14 +437,28 @@ class ComicArchive():
         else:
             # write to current dir
             new_path = Path(f'{self.fp.stem}.{book_format}')
-        if new_path.exists():
+        if new_path.exists() and not config.overwrite:
+            print("I'm still deleting for some")
             mylog(f'Write .{book_format}: {new_path}', progress=True)
             mylog(f'{new_path} exists, removing...')
             new_path.unlink()
 
         new_path = str(new_path)
         if book_format == 'cbz':
-            return write_zip(new_path, self.fetch_chapters())
+            import os
+            from tempfile import mkstemp
+            if config.overwrite:
+                fd, path = mkstemp()
+                try:
+                    with os.fdopen(fd, 'w'):
+                        tmp_path = Path(write_zip(path, self.fetch_chapters()))
+                        if tmp_path.stat().st_size < self.fp.stat().st_size:
+                            return write_zip(new_path, self.fetch_chapters())
+                finally:
+                    os.remove(path)
+                return Path(new_path)
+            else:
+                return write_zip(new_path, self.fetch_chapters())
         elif book_format == 'zip':
             return write_zip(new_path, self.fetch_chapters())
         elif book_format == 'epub':
