@@ -38,6 +38,11 @@ def write_zip(savepath, chapters):
                 new_zip.write(page.fp, dest, ZIP_DEFLATED, 9)
             else:
                 new_zip.write(page.fp, dest, ZIP_STORED)
+    # Will take the ComicInfo.xml file if it was added. Must use --force.
+    xml_file = (str(chapters[0][0].fp)).replace(str(chapters[0][0].rel_path), "ComicInfo.xml")
+    from os.path import exists
+    if exists(xml_file):
+        new_zip.write(xml_file, "ComicInfo.xml")
     new_zip.comment = str.encode(config.ZIPCOMMENT)
     new_zip.close()
     return savepath
